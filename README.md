@@ -24,10 +24,10 @@ In this tutorial, we will build a React Native app that uses Firebase Authentica
 </ul>
 
 ### Register app with Firebase and Facebook
-####Facebook
+#### Facebook
 Follow the instructions at this [link](https://docs.expo.io/versions/latest/sdk/facebook.html#expofacebookloginwithreadpermissionsasync) to register your app and set it up for Facebook integration. Follow the instructions for The Expo client app.
 
-####Firebase
+#### Firebase
 To create a new firebase project, go to your [Firebase console](https://console.firebase.google.com/), click “Add Project”, type in your project’s name and select your region.
 
 Enable Facebook Login: (taken from https://firebase.google.com/docs/auth/ios/facebook-login)

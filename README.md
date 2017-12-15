@@ -16,12 +16,10 @@ A React Native App Using Firebase for Authentication and Database
 
 ## Tutorial
 In this tutorial, we will build a React Native app that uses Firebase Authentication and Realtime Database services, to find out more about Firebase, visit this [link](https://firebase.google.com/).
-<ul>
-  <li><a href="#step0">Register app with Firebase and Facebook</a></li>
-  <li><a href="#step1">Step 1: Getting Started</a></li>
-  <li><a href="#step2">Step 2: Install Dependencies</a></li>
-  <li><a href="#">More to come....</a></li>
-</ul>
+1. Register app with Firebase and Facebook
+2. Getting Started
+3. Install Dependencies
+
 
 ### Register app with Firebase and Facebook
 #### Facebook

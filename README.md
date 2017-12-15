@@ -12,4 +12,6 @@ A React Native App Using Firebase for Authentication and Database
 2. Add Quote
 3. Update Quote
 4. Delete Quote
-   
+
+## Tutorial 
+**Coming soon on [my blog](https://medium.com/@mosesesan)**

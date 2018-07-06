@@ -3,14 +3,23 @@ export function isEmpty(str) {
 }
 
 export function validateEmail(email) {
-    let pattern = "/^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$/";
     var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 
     if (filter.test(email)) return true;
+
     return false;
 }
 
-export function validatePassword(email) {
+export function validatePassword(password) {
+    if (password.length > 6) return true;
+
+    return false;
+}
+
+export function confirmPassword(c_password, password) {
+    if (c_password === password) return true;
+
+    return false;
 }
 
 export function validate(form) {
@@ -20,8 +29,8 @@ export function validate(form) {
     var keys = Object.keys(form);
     var length = keys.length;
 
-    keys.slice(0, length - 1).map(field => {
-        if (form[field] !== null){
+    keys.slice(0, length).map(field => {
+        if (field !== "error"){
             var { type, value } = form[field];
             if (isEmpty(value)){
                 error[field] = 'Your ' + field + ' is required';
@@ -29,8 +38,14 @@ export function validate(form) {
             }else{
                 error[field] = '';
 
-                if (type === "email" && !validateEmail(value)){
+                if (type === "email" && !validateEmail(value)) {
                     error[field] = 'Enter a valid email address';
+                    success = false;
+                }else if (type === "password" && !validatePassword(value)) {
+                    error[field] = 'Password must be at least 6 characters';
+                    success = false;
+                }else if (type === "confirm_password" && !confirmPassword(value, form["password"]['value'])) {
+                    error[field] = 'Password does not match.';
                     success = false;
                 }
             }
@@ -38,5 +53,4 @@ export function validate(form) {
     });
 
     return {success, error};
-
 }

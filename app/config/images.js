@@ -1,4 +1,0 @@
-const images = {
-}
-
-export { images }

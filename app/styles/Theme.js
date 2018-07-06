@@ -1,30 +1,51 @@
-var { Dimensions, Platform } = require('react-native');
+import { Dimensions, Platform } from 'react-native';
+import { moderateScale as normalize } from 'react-native-size-matters';
 
 const color = {
-    black: "#010101",
-    main: "#397af8",
+    black: "#3B3031",
+    light_black: "#414141",
+    main: "rgb(99,139,250)",
     white: "#ffffff",
-    grey: "#eaeaea"
+    light_grey: "#eaeaea",
+    grey: "#ccc",
+    red: "red",
+    underlayColor: "#ddd"
 }
 
 const fontSize = {
-    tiny: 12,
-    smaller: 13,
-    small: 14,
-    regular: 15,
-    large: 22
+    small: normalize(12),
+    regular: normalize(14),
+    large: normalize(21)
 }
 
 const fontFamily = {
-}
-
-const misc = {
-    navbar_height: (Platform.OS === 'ios') ? 64 : 54,
-    window_width: Dimensions.get('window').width,
-    window_height: Dimensions.get('window').height
+    extrabold: "RobotoExtraBold",
+    bold: "RobotoBold",
+    medium: "RobotoMedium",
+    regular: "RobotoRegular",
+    light: "RobotoLight"
 }
 
 const padding = 8;
+const navbarHeight = (Platform.OS === 'ios') ? 64 : 54;
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
+const tabColor = (Platform.OS === "ios") ? "rgba(73,75,76, .5)" : "rgba(255,255,255,.8)";
+const selectedTabColor = (Platform.OS === "ios") ? "rgb(73,75,76)" : "#fff";
 
-export {color, fontSize, fontFamily, misc, padding}
+const tabIconStyle = { size: 21, color: tabColor, selected: selectedTabColor }
+const navTitleStyle = { fontSize: fontSize.regular , fontFamily: fontFamily.extrabold, color: color.black }
+
+export {
+    color,
+    fontSize,
+    fontFamily,
+    padding,
+    navbarHeight,
+    windowWidth,
+    windowHeight,
+    tabIconStyle,
+    navTitleStyle,
+    normalize
+}

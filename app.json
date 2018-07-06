@@ -1,5 +1,15 @@
 {
   "expo": {
-    "sdkVersion": "22.0.0"
+    "name": "Splitter",
+    "icon": "./app/assets/images/splitterIcon.png",
+    "version": "1.0.0",
+    "slug": "splitterrn",
+    "sdkVersion": "22.0.0",
+    "ios": {
+      "bundleIdentifier": "com.rumblewayne.splitterrn"
+    },
+    "android": {
+      "package": "com.rumblewayne.splitterrn"
+    }
   }
 }

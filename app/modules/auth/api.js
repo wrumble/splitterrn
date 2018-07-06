@@ -1,78 +1,75 @@
-import axios from 'axios';
+import { auth, database, provider } from "../../config/firebase";
 
-import firebase from "../../config/firebase";
-
-const auth = firebase.auth();
-const database = firebase.database();
-const provider = firebase.auth.FacebookAuthProvider;
-
-const imageSize = 120;
-
-//Create the new user using email and password
-export function createUserWithEmailAndPassword (data, callback) {
-    var { email, password } = data;
+//Register the user using email and password
+export function register(data, callback) {
+    const { email, password, username } = data;
     auth.createUserWithEmailAndPassword(email, password)
-        .then((user) => callback(true, user, null))
+        .then((resp) => createUser({ username, uid:resp.uid }, callback))
         .catch((error) => callback(false, null, error));
+}
+
+//Create the user object in realtime database
+export function createUser (user, callback) {
+    const userRef = database.ref().child('users');
+    console.log("createUser");
+    console.log(user);
+
+    userRef.child(user.uid).update({ ...user })
+        .then(() => callback(true, user, null))
+        .catch((error) => callback(false, null, {message: error}));
 }
 
 //Sign the user in with their email and password
-export function signInWithEmailAndPassword (data, callback) {
-    var { email, password } = data;
+export function login(data, callback) {
+    const { email, password } = data;
     auth.signInWithEmailAndPassword(email, password)
-        .then((user) => callback(true, user, null))
+        .then((resp) => getUser(resp.user, callback))
         .catch((error) => callback(false, null, error));
 }
 
-// ========================================================================================>
-
-// Get the user's info using Facebook's Graph API
-export function signInWithFacebook (fbToken, callback) {
-    var api = `https://graph.facebook.com/me?fields=id,first_name,last_name,gender,birthday&access_token=${fbToken}`;
-    axios.get(api)
-        .then(res => res.data)
-        .then((fbData) => {
-            fbData['token'] = fbToken;
-            fbData['profileImage'] = `https://graph.facebook.com/${fbData.id}/picture?height=${imageSize}`
-            this.signIn(fbData, callback)
-        })
-        .catch(error => callback(false, null, {message: error}))
-}
-
-//Sign the user in
-export function signIn (fbData, callback) {
-    const credential = provider.credential(fbData.token);
-    auth.signInWithCredential(credential)
-        .then((user) => this.checkUserExist(user, fbData, callback))
-        .catch((error) => callback(false, null, {message: error}));
-}
-
-//Check if the user exist in the realtime database
-export function checkUserExist (user, fbData, callback) {
-    database.ref('/users/' + user.uid).once('value')
+//Get the user object from the realtime database
+export function getUser(user, callback) {
+    console.log("getUser1");
+    console.log(user);
+    console.log("getUser2");
+    console.log(user.uid);
+    console.log("getUser3");
+    database.ref('users').child(user.uid).once('value')
         .then(function(snapshot) {
-            var exists = (snapshot.val() === null) ? false : true;
-            var data = {newUser: !exists, user: user};
 
-            if (exists) callback(true, data, null);//return
-            else this.createUser(user.uid, fbData, callback)
+            const exists = (snapshot.val() !== null);
+
+            //if the user exist in the DB, replace the user variable with the returned snapshot
+            if (exists) user = snapshot.val();
+
+            const data = { exists, user }
+            callback(true, data, null);
         })
-        .catch(error => callback(false, null, {message: error}));
+        .catch(error => callback(false, null, error));
 }
 
-export function createUser (userId, data, callback) {
-    database.ref('users').child(userId).set({ ...data })
-        .then(() =>  callback(true, data, null)) //return
-        .catch((error) => callback(false, null, {message: error}));
-}
-
-export function updateUser (userId, data, callback) {
-    database.ref('users').child(userId).update({ ...data })
-        .then(() =>  {callback(true, data, null)}) //return
-        .catch((error) => callback(false, null, {message: error}));
+//Send Password Reset Email
+export function resetPassword(data, callback) {
+    const { email } = data;
+    auth.sendPasswordResetEmail(email)
+        .then((user) => callback(true, null, null))
+        .catch((error) => callback(false, null, error));
 }
 
 export function signOut (callback) {
-    auth.signOut().then(() => callback(true, null, null))
-        .catch((error) => callback(false, null, {message: error}));
+    auth.signOut()
+        .then(() => {
+            if (callback) callback(true, null, null)
+        })
+        .catch((error) => {
+            if (callback) callback(false, null, error)
+        });
+}
+
+//Sign user in using Facebook
+export function signInWithFacebook (fbToken, callback) {
+    const credential = provider.credential(fbToken);
+    auth.signInWithCredential(credential)
+        .then((user) => getUser(user, callback))
+        .catch((error) => callback(false, null, error));
 }
